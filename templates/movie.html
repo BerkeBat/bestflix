@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+<title>{% block title %}{{ movie['title'] }}{% endblock %}</title>
+
+{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-sm-2">
+
+    </div>
+    <div class="col-sm-8 text-center">
+        <h1>{{ movie['title'] }} <div class="mb-2 text-muted"> ({{ movie['released'][6:10] }})</div></h1>
+        <div class="container" style="width: 24rem;">
+            <ul class="list-group">
+                <li class="list-group-item">Genre: {{ movie['genre'] }}</li>
+                <li class="list-group-item">Classification: {{ movie['classification'] }}</li>
+                <li class="list-group-item">Starring: {{ movie['star'] }}</li>
+                <li class="list-group-item">Runtime: {{ movie['runtime'] }}</li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-sm-2">
+        
+    </div>
+
+</div>
+{% endblock %}
