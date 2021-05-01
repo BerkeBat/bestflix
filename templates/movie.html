@@ -4,27 +4,109 @@
 
 <title>{% block title %}{{ movie['title'] }}{% endblock %}</title>
 
+
 {% endblock %}
 
 {% block body %}
+
+
 <div class="row">
-    <div class="col-sm-2">
+    <div class="col-sm-4">
 
     </div>
-    <div class="col-sm-8 text-center">
-        <h1>{{ movie['title'] }} <div class="mb-2 text-muted"> ({{ movie['released'][6:10] }})</div></h1>
-        <div class="container" style="width: 24rem;">
-            <ul class="list-group">
-                <li class="list-group-item">Genre: {{ movie['genre'] }}</li>
-                <li class="list-group-item">Classification: {{ movie['classification'] }}</li>
-                <li class="list-group-item">Starring: {{ movie['star'] }}</li>
-                <li class="list-group-item">Runtime: {{ movie['runtime'] }}</li>
-            </ul>
+    <div class="col-sm-4">
+        <div class="container-fluid  text-center text-light">
+            {% if movie != None %}
+                <h1>{{ movie['title'] }} <div class="mb-2 text-muted"> ({{ movie['released'][6:10] }}) </div></h1>
+                <div class="container text-dark" style="width: 24rem;">
+                    <ul class="list-group">
+                        <li class="list-group-item">Genre: {{ movie['genre'] }}</li>
+                        <li class="list-group-item">Classification: {{ movie['classification'] }}</li>
+                        <li class="list-group-item">Starring: {{ movie['star'] }}</li>
+                        <li class="list-group-item">Runtime: {{ movie['runtime'] }} ({{ runtime_readable }})</li>
+                    </ul>
+                </div>
+                
+                {% else %}
+                <h1>Movie Not Found</h1>
+                <a style="color: black ;" href="/" class="btn btn-link" role="button">Return Home</a>
+                {% endif %}
+                
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="container-fluid text-center text-light">
+                <h4>Leave a Review</h4>
+                <div style="display:none" id="noVoteAlert" class="alert alert-secondary" role="alert">
+                    Please vote the movie up or down
+                </div>
+                <form action="javascript:void(0);" method="post" id="reviewForm" style="padding-bottom: 2rem;">
+                    <div class="form-group">
+                        <!-- <label for="messagearea">Leave A Review</label> -->
+                        <textarea class="form-control" name="reviewarea" rows="3" required></textarea>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-dark" id="voteUp" onclick="reviewVotes(this.id)"><i class="fas fa-thumbs-up"></i></button>
+                        <button type="button" class="btn btn-dark" id="voteDown" onclick="reviewVotes(this.id)"><i class="fas fa-thumbs-down"></i></button>
+                    </div>
+                    <input type="hidden" id="voteValue" name="voteValue" value="none">
+                    <input type="hidden" id="movieid" name="movieid" value="{{ movie['movieid']}}">
+                    <input class="btn btn-dark" type="submit" onclick="mustGiveVote(movieid.value)" value="Post">
+                </form>
+                {% for review in reviews %}
+                    <div class="card text-white bg-dark mb-3">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-3">
+                                    {% if review['vote'] == 'up' %}
+                                        <h5 class="card-title" style="color: green; font-size: 50px;"><i class="fas fa-thumbs-up"></i></h5>
+                                    {% elif review['vote'] == 'down' %}
+                                        <h5 class="card-title" style="color: red; font-size: larger;"><i class="fas fa-down-up"></i></h5>
+                                    {% endif %}
+                                </div>
+                                <div class="col-sm-9">
+                                    <p class="card-text">{{ review['review_text'] }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                
+            </div>
         </div>
     </div>
-    <div class="col-sm-2">
-        
-    </div>
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/script.js') }}"></script>
+<script>
+    function mustGiveVote(movieid) {
+        const voteValue = document.getElementById('voteValue');
+        const noVoteAlert = document.getElementById("noVoteAlert")
+        const reviewForm = document.getElementById("reviewForm")
+        if(voteValue.value == "none"){
+                reviewForm.action = "javascript:void(0);"
+                noVoteAlert.style.display = "block"
+        } else{
+                reviewForm.action = "/movie/" + movieid
+                noVoteAlert.style.display = "none"
+        }
+    }
 
-</div>
+    function reviewVotes(clickedVote) {
+        const voteUp = document.getElementById('voteUp');
+        const voteDown = document.getElementById('voteDown');
+        const voteValue = document.getElementById('voteValue');
+        if (document.getElementById(clickedVote) == voteUp){
+            voteUp.disabled = true;
+            voteUp.style.backgroundColor = 'green';
+            voteDown.disabled = false;
+            voteDown.style.backgroundColor = 'rgb(52, 58, 64)'
+            voteValue.value = 'up';
+        }else if(document.getElementById(clickedVote) == voteDown){
+            voteUp.disabled = false;
+            voteUp.style.backgroundColor = 'rgb(52, 58, 64)';
+            voteDown.disabled = true;
+            voteDown.style.backgroundColor = 'red';
+            voteValue.value = 'down';
+        }
+    }
+</script>
 {% endblock %}
