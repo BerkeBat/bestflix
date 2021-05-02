@@ -35,27 +35,24 @@ def movie(movieid):
         return render_template('movie.html', movie=movie, runtime_readable = runtime_readable, reviews = reviews)
     return render_template('movie.html', movie=movie, reviews = reviews)
 
-@app.route('/search/<string:search_term>')
-def search(search_term):
+@app.route('/search', methods=['GET', 'POST'])
+def search():
     # if request.method == 'POST':
     #     search_term = request.form['search_term']
     #     return redirect("/search/" + search_term)
+    search_term = request.args.get('search_term')
     movies = query_movie(search_term)
 
     return render_template('search.html', movies = movies, search_term = search_term)
 
-
-@app.route('/search_redirect', methods=['GET', 'POST'])
-def search_redirect():
-    search_term = request.form['search_term']
-    return redirect("/search/" + search_term)
-
 def post_review(movieid,review_text, vote):
+    user = 'test2'
     try:
         review_table.put_item(
             Item={
+                'reviewid': "{}_{}".format(user,movieid),
+                'user': user,
                 'movieid': movieid,
-                'user': 'test',
                 'review_text': review_text,
                 'vote': vote,
             }
@@ -67,11 +64,10 @@ def query_movie(term):
     query_filter_list = []
     movies = {}
     searchable_attributes = ['title', 'star', 'director', 'genre', 'country']
-    for att in searchable_attributes:
-        query_filter_list.append("Attr('{}').contains('{}')".format(att, term.lower()))
-    query_filter_expression = " | ".join(f for f in query_filter_list)
-    app.logger.info("berke: " + query_filter_expression)
     try:
+        for att in searchable_attributes:
+            query_filter_list.append("Attr('{}').contains('{}')".format(att, term.lower()))
+        query_filter_expression = " | ".join(f for f in query_filter_list)
         movie_raw_response = db.Table('movie_searchable').scan(
             FilterExpression=eval(query_filter_expression)
         )

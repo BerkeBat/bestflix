@@ -11,25 +11,29 @@
         <div class="col-sm-4">
         </div>
         <div class="col-sm-4 text-center">
-            <h1>Search Results for '{{ search_term }}'</h1>
-            <h2 class="text-muted">({{ movies|length() }})</h2>
-            {% for movie in movies %}
-                <a href="/movie/{{ movie['movieid']}}">
-                    <div class="card bg-dark text-white">
-                        <div class="row">
-                            <div class="col-sm-2">
-                            </div>
-                            <div class="col-sm-8">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ movie['title']|title() }}</h5>
-                                    <h6 class="card-subtitle mb-2 text-muted">{{ movie['released'][6:10] }} • Starring: {{ movie['star']|title() }}</h6>
+            <div class="container-fluid text-light">
+                <h1>Search Results for '{{ search_term }}'</h1>
+                <h2 class="text-muted">({{ movies|length() }})</h2>
+                {% for movie in movies %}
+                    <a href="/movie/{{ movie['movieid']}}">
+                        <div class="card bg-dark text-white">
+                            <div class="row">
+                                <div class="col-sm-2">
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title">{{ movie['title']|title() }}</h5>
+                                        <h6 class="card-subtitle mb-2 text-muted">{{ movie['released'][6:10] }} • Starring: {{ movie['star']|title() }}</h6>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </a>
-            {% endfor %}
-        </div>
+                    </a>
+                {% endfor %}
+            </div>
+
+
+            </div>
         <div class="col-sm-4">
         </div>
     </div>

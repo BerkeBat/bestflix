@@ -19,13 +19,15 @@ function reviewVotes(clickedVote) {
 
 function mustGiveVote(movieid) {
     const voteValue = document.getElementById('voteValue');
-    const noVoteAlert = document.getElementById("noVoteAlert")
-    const reviewForm = document.getElementById("reviewForm")
+    const noVoteAlert = document.getElementById("noVoteAlert");
+    const reviewForm = document.getElementById("reviewForm");
     if(voteValue.value == "none"){
-            reviewForm.action = "javascript:void(0);"
-            noVoteAlert.style.display = "block"
+            reviewForm.action = "javascript:void(0);";
+            noVoteAlert.style.display = "block";
     } else{
-            reviewForm.action = "/movie/" + movieid
-            noVoteAlert.style.display = "none"
+            reviewForm.action = "/movie/" + movieid;
+            noVoteAlert.style.display = "none";
     }
 }
+
+

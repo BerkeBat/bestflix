@@ -26,12 +26,10 @@
                         <li class="list-group-item">Runtime: {{ movie['runtime'] }} ({{ runtime_readable }})</li>
                     </ul>
                 </div>
-                
-                {% else %}
+            {% else %}
                 <h1>Movie Not Found</h1>
                 <a style="color: black ;" href="/" class="btn btn-link" role="button">Return Home</a>
-                {% endif %}
-                
+            {% endif %}
             </div>
         </div>
         <div class="col-sm-4">
@@ -42,7 +40,6 @@
                 </div>
                 <form action="javascript:void(0);" method="post" id="reviewForm" style="padding-bottom: 2rem;">
                     <div class="form-group">
-                        <!-- <label for="messagearea">Leave A Review</label> -->
                         <textarea class="form-control" name="reviewarea" rows="3" required></textarea>
                     </div>
                     <div class="btn-group" role="group">
@@ -54,18 +51,19 @@
                     <input class="btn btn-dark" type="submit" onclick="mustGiveVote(movieid.value)" value="Post">
                 </form>
                 {% for review in reviews %}
-                    <div class="card text-white bg-dark mb-3">
+                    <div class="card text-white text-left bg-dark mb-3">
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-sm-3">
                                     {% if review['vote'] == 'up' %}
                                         <h5 class="card-title" style="color: green; font-size: 50px;"><i class="fas fa-thumbs-up"></i></h5>
                                     {% elif review['vote'] == 'down' %}
-                                        <h5 class="card-title" style="color: red; font-size: larger;"><i class="fas fa-down-up"></i></h5>
+                                        <h5 class="card-title" style="color: rgba(255, 0, 0, 0.623); font-size: 50px;"><i class="fas fa-thumbs-down"></i></h5>
                                     {% endif %}
                                 </div>
                                 <div class="col-sm-9">
                                     <p class="card-text">{{ review['review_text'] }}</p>
+                                    <h6 class="card-subtitle mb-2 text-muted">- {{ review['user'] }}</h6>
                                 </div>
                             </div>
                         </div>
@@ -76,37 +74,4 @@
         </div>
     </div>
 <script type="text/javascript" src="{{ url_for('static', filename='scripts/script.js') }}"></script>
-<script>
-    function mustGiveVote(movieid) {
-        const voteValue = document.getElementById('voteValue');
-        const noVoteAlert = document.getElementById("noVoteAlert")
-        const reviewForm = document.getElementById("reviewForm")
-        if(voteValue.value == "none"){
-                reviewForm.action = "javascript:void(0);"
-                noVoteAlert.style.display = "block"
-        } else{
-                reviewForm.action = "/movie/" + movieid
-                noVoteAlert.style.display = "none"
-        }
-    }
-
-    function reviewVotes(clickedVote) {
-        const voteUp = document.getElementById('voteUp');
-        const voteDown = document.getElementById('voteDown');
-        const voteValue = document.getElementById('voteValue');
-        if (document.getElementById(clickedVote) == voteUp){
-            voteUp.disabled = true;
-            voteUp.style.backgroundColor = 'green';
-            voteDown.disabled = false;
-            voteDown.style.backgroundColor = 'rgb(52, 58, 64)'
-            voteValue.value = 'up';
-        }else if(document.getElementById(clickedVote) == voteDown){
-            voteUp.disabled = false;
-            voteUp.style.backgroundColor = 'rgb(52, 58, 64)';
-            voteDown.disabled = true;
-            voteDown.style.backgroundColor = 'red';
-            voteValue.value = 'down';
-        }
-    }
-</script>
 {% endblock %}
