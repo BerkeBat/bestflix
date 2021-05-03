@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>{% block title %}Login{% endblock %}</title>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-sm-4"></div>
+    <div style="padding-top: 20px;" class="col-sm-4">
+        <div class="container-fluid text-light">
+            <!-- <div class="alert alert-danger" role="alert" id="alertdiv" style="display: block;">
+                Email or password is invalid.
+            </div> -->
+            <form action="/login" method="POST">
+                <div class="form-group">
+                    <label for="username">Username:</label>
+                    <input type="username" class="form-control" name="username" required>
+                </div>
+                <div class="form-group">
+                  <label for="pass">Password:</label>
+                  <input type="password" class="form-control" name="pass" required>
+                </div>
+                <button type="submit" class="btn btn-dark">Login</button>
+            </form>
+            <a style="color: white;" href="/register" class="btn btn-link" role="button">No account? Register</a>
+        </div>
+    </div>
+    <div class="col-sm-4"></div>
+</div>
+{% endblock %}

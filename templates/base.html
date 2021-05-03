@@ -30,10 +30,17 @@
           <li class="nav-item"></li>
           <li class="nav-item"></li>
         </div>
-        <div class="navbar-nav ml-auto">
-          <li class="nav-item"><a class="nav-link"><i class="fas fa-user-plus"></i> Register</a></li>
-          <li class="nav-item"><a class="nav-link"><i class="fas fa-sign-in-alt"></i> Login</a></li>
-        </div>
+        {% if session.logged_in %}
+          <div class="navbar-nav ml-auto">
+            <li class="nav-item"><a class="nav-link" ><i class="fas fa-user"></i> {{ session['username'] }}</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+          </div>
+        {% else %}
+            <div class="navbar-nav ml-auto">
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('register')}}"><i class="fas fa-user-plus"></i> Register</a></li>
+              <li class="nav-item"><a class="nav-link" href="{{ url_for('login')}}"><i class="fas fa-sign-in-alt"></i> Login</a></li>
+            </div>
+        {% endif %}
     </nav>
     {% block body %} {% endblock %}
 </body>

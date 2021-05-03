@@ -35,7 +35,12 @@
         <div class="col-sm-4">
             <div class="container-fluid text-center text-light">
                 <h4>Leave a Review</h4>
-                <div style="display:none" id="noVoteAlert" class="alert alert-secondary" role="alert">
+                {% if show_post_error == True %}
+                    <div id="alreadyReviewedAlert" class="alert alert-dark" role="alert">
+                        You have already left a review for this movie.
+                    </div>
+                {% endif %}
+                <div style="display:none" id="noVoteAlert" class="alert alert-dark" role="alert">
                     Please vote the movie up or down
                 </div>
                 <form action="javascript:void(0);" method="post" id="reviewForm" style="padding-bottom: 2rem;">
