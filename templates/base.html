@@ -32,7 +32,7 @@
         </div>
         {% if session.logged_in %}
           <div class="navbar-nav ml-auto">
-            <li class="nav-item"><a class="nav-link" ><i class="fas fa-user"></i> {{ session['username'] }}</a></li>
+            <li class="nav-item"><a class="nav-link" href="/user/{{ session['username'] }}" ><i class="fas fa-user"></i> {{ session['username'] }}</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
           </div>
         {% else %}

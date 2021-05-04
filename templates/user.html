@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>{% block title %}{{ user['username'] }}{% endblock %}</title>
+{% endblock %}
+
+{% block body %}
+<div class="row">
+    <div class="col-sm-4">
+        <div style="padding-top: 20px;" class="container-fluid text-light text-left">
+            <h1>Favourites</h1>
+            {% for movie in user_favourites %}
+                    <div class="card bg-dark text-white">
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <img style="height: 100px;" src="https://bestflix.s3-ap-southeast-2.amazonaws.com/{{ movie['movieid']}}.jpg" alt="{{ movie['title'] }}">
+                            </div>
+                            <div class="col-sm-7">
+                                <div class="card-body">
+                                    <a style="color: white;" href="/movie/{{ movie['movieid'] }}" class="btn btn-link"><h5 class="card-title">{{ movie['title']|title() }}</h5></a>
+                                    <h6 class="card-subtitle mb-2 text-muted">{{ movie['released'][6:10] }} • Starring: {{ movie['star']|title() }}</h6>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="container-fluid text-left float-right" >
+                                    {% if session.logged_in and session['username'] == user['username'] %}
+                                        <form action="/movie/{{ movie['movieid']}}" method="POST">
+                                            <input type="hidden" name="form-type" value="favourite_remove">
+                                            <input type="hidden" name="callback" value="/user/{{ user['username'] }}">
+                                            <input type="hidden" id="movieid" name="movieid" value="{{ movie['movieid']}}">
+                                            <button type="submit" class="btn btn-danger"><i class="fas fa-ban"></i></button>
+                                        </form>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+            {% endfor %}
+        </div>
+    </div>
+    <div style="padding-top: 20px;" class="col-sm-4"></div>
+    <div class="col-sm-4">
+        <div style="padding-top: 20px;" class="container-fluid text-light text-left">
+            <h1>Reviews</h1>
+            {% for review in user_reviews %}
+                <div class="card text-white text-left bg-dark mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                {% if review['vote'] == 'up' %}
+                                    <h5 class="card-title" style="color: green; font-size: 50px;"><i class="fas fa-thumbs-up"></i></h5>
+                                {% elif review['vote'] == 'down' %}
+                                    <h5 class="card-title" style="color: rgba(255, 0, 0, 0.623); font-size: 50px;"><i class="fas fa-thumbs-down"></i></h5>
+                                {% endif %}
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="card-text">{{ review['review_text'] }}</p>
+                                <h6 class="card-subtitle mb-2 text-muted">- {{ review['user'] }}</h6>
+                                <a style="color: white;" href="/movie/{{ review['movieid'] }}" class="btn btn-link"><h6 class="card-subtitle">on: {{ review['movietitle'] }}</h6></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

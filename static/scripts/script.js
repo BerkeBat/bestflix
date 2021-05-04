@@ -30,4 +30,19 @@ function mustGiveVote(movieid) {
     }
 }
 
+$(document).ready(
+    function giveRemoveOption(inorout) {
+        const favouritedButton = document.getElementById('favouritedButton');
+        if(inorout == "in"){
+            favouritedButton.style.backgroundColor = "#dc3545";
+            favouritedButton.style.borderColor = "#dc3545";
+            favouritedButton.innerHTML = "<i class='fas fa-ban'></i> Remove";
+        } else if (inorout == "out"){
+            favouritedButton.style.backgroundColor = "#ba8e09";
+            favouritedButton.style.borderColor = "#ba8e09";
+            favouritedButton.innerHTML = "<i class='fas fa-check-circle'></i> Favourited";
+        }
+    }
+)
+
 

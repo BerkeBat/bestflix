@@ -15,12 +15,13 @@
                 <h1>Search Results for '{{ search_term }}'</h1>
                 <h2 class="text-muted">({{ movies|length() }})</h2>
                 {% for movie in movies %}
-                    <a href="/movie/{{ movie['movieid']}}">
+                    <a class="text-left "href="/movie/{{ movie['movieid']}}">
                         <div class="card bg-dark text-white">
                             <div class="row">
                                 <div class="col-sm-2">
+                                    <img style="height: 100px;" src="https://bestflix.s3-ap-southeast-2.amazonaws.com/{{ movie['movieid']}}.jpg" alt="{{ movie['title'] }}">
                                 </div>
-                                <div class="col-sm-8">
+                                <div class="col-sm-10">
                                     <div class="card-body">
                                         <h5 class="card-title">{{ movie['title']|title() }}</h5>
                                         <h6 class="card-subtitle mb-2 text-muted">{{ movie['released'][6:10] }} • Starring: {{ movie['star']|title() }}</h6>
