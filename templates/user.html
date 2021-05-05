@@ -13,7 +13,7 @@
                     <div class="card bg-dark text-white">
                         <div class="row">
                             <div class="col-sm-2">
-                                <img style="height: 100px;" src="https://bestflix.s3-ap-southeast-2.amazonaws.com/{{ movie['movieid']}}.jpg" alt="{{ movie['title'] }}">
+                                <img style="height: 120px;" src="https://bestflix.s3-ap-southeast-2.amazonaws.com/{{ movie['movieid']}}.jpg" alt="{{ movie['title'] }}">
                             </div>
                             <div class="col-sm-7">
                                 <div class="card-body">
@@ -38,7 +38,11 @@
             {% endfor %}
         </div>
     </div>
-    <div style="padding-top: 20px;" class="col-sm-4"></div>
+    <div style="padding-top: 20px;" class="col-sm-4">
+        <div style="padding-top: 20px;" class="container-fluid text-light text-left">
+            {{ session['awdawd'] }}
+        </div>
+    </div>
     <div class="col-sm-4">
         <div style="padding-top: 20px;" class="container-fluid text-light text-left">
             <h1>Reviews</h1>
