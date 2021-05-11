@@ -65,7 +65,7 @@ def log_in_user(username, password):
     return success
 
 def update_favourite(addremove, movieid):
-    user_favourites = get_user(session['username'])['favourites']
+    user_favourites = get_user("dynamodb", session['username'])['favourites']
     if(addremove=="add"):
         user_favourites.append(movieid)
     elif(addremove=="remove"):
