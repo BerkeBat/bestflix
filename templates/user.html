@@ -40,7 +40,9 @@
     </div>
     <div style="padding-top: 20px;" class="col-sm-4">
         <div style="padding-top: 20px;" class="container-fluid text-light text-left">
-            {{ session['awdawd'] }}
+            <h6>You will need to verify your email address to receive emails when you leave reviews on movies.</h6>
+            <p id="verifyEmailLabel" for="email">Current Verfication Status: {{ verification_status }} </p>
+            
         </div>
     </div>
     <div class="col-sm-4">
@@ -60,7 +62,9 @@
                             <div class="col-sm-9">
                                 <p class="card-text">{{ review['review_text'] }}</p>
                                 <h6 class="card-subtitle mb-2 text-muted">- {{ review['user'] }}</h6>
-                                <a style="color: white;" href="/movie/{{ review['movieid'] }}" class="btn btn-link"><h6 class="card-subtitle">on: {{ review['movietitle'] }}</h6></a>
+                                <a style="color: white;" href="/movie/{{ review['movieid'] }}" class="btn btn-link">
+                                    <h6 class="card-subtitle">on: {{ review['movietitle'] }}</h6>
+                                </a>
                             </div>
                         </div>
                     </div>

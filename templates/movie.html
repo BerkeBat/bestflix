@@ -3,6 +3,7 @@
 {% block head %}
 
 <title>{% block title %}{{ movie['title'] }}{% endblock %}</title>
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/script.js') }}" defer></script>
 
 
 {% endblock %}
@@ -46,27 +47,29 @@
         <div class="col-sm-3">
             <div class="container-fluid text-center text-light">
                 <h4>Leave a Review</h4>
-                {% if show_post_error == True %}
-                    <div id="alreadyReviewedAlert" class="alert alert-dark" role="alert">
-                        You have already left a review for this movie.
-                    </div>
+                {% if not session.logged_in %}
+                        <h6 class="text-muted">Please log in to leave a review</h6>
                 {% endif %}
                 <div style="display:none" id="noVoteAlert" class="alert alert-dark" role="alert">
                         Please vote the movie up or down
                 </div>
                 <form action="javascript:void(0);" method="post" id="reviewForm" style="padding-bottom: 2rem;">
                     <div class="form-group">
-                        <textarea class="form-control" name="reviewarea" rows="3" required></textarea>
+                        <textarea class="form-control" name="reviewarea" rows="3" required {% if not session.logged_in %}disabled{% endif %}></textarea>
                     </div>
                     <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-dark" id="voteUp" onclick="reviewVotes(this.id)"><i class="fas fa-thumbs-up"></i></button>
-                        <button type="button" class="btn btn-dark" id="voteDown" onclick="reviewVotes(this.id)"><i class="fas fa-thumbs-down"></i></button>
+                        <button type="button" class="btn btn-dark" id="voteUp" onclick="reviewVotes(this.id)" {% if not session.logged_in %}disabled{% endif %}>
+                            <i class="fas fa-thumbs-up"></i>
+                        </button>
+                        <button type="button" class="btn btn-dark" id="voteDown" onclick="reviewVotes(this.id)" {% if not session.logged_in %}disabled{% endif %}>
+                            <i class="fas fa-thumbs-down"></i>
+                        </button>
                     </div>
                     <input type="hidden" id="voteValue" name="voteValue" value="none">
                     <input type="hidden" id="movieid" name="movieid" value="{{ movie['movieid']}}">
                     <input type="hidden" name="form-type" value="review">
                     <input type="hidden" name="callback" value="/movie/{{ movie['movieid']}}">
-                    <input class="btn btn-dark" type="submit" onclick="mustGiveVote(movieid.value)" value="Post">
+                    <input class="btn btn-dark" type="submit" onclick="mustGiveVote(movieid.value)" value="Post" {% if not session.logged_in %}disabled{% endif %}>
                 </form>
                 {% for review in reviews %}
                     <div class="card text-white text-left bg-dark mb-3">
@@ -91,5 +94,4 @@
             </div>
         </div>
     </div>
-<script type="text/javascript" src="{{ url_for('static', filename='scripts/script.js') }}" defer></script>
 {% endblock %}
