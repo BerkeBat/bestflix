@@ -3,7 +3,8 @@
 {% block head %}
 
 <title>{% block title %}{{ movie['title'] }}{% endblock %}</title>
-<script type="text/javascript" src="{{ url_for('static', filename='scripts/script.js') }}" defer></script>
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/script.js') }}" defer></script><div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v10.0" nonce="kBphSrmo"></script>
 
 
 {% endblock %}
@@ -49,63 +50,63 @@
                     </form>
                 {% endif %}
             {% endif %}
-            </div>
+            <div style="padding-top: 8rem;" class="fb-share-button" data-href="/movie/{{ movie['movieid']}}" data-layout="button" data-size="small"><a target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fvalue%2F&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">Share</a></div>
         </div>
-        <div class="col-sm-3">
-            <div class="container-fluid text-center text-light">
-                <h4>Leave a Review</h4>
-                {% if not session.logged_in %}
-                        <h6 class="text-muted">Please log in to leave a review</h6>
-                {% endif %}
-                <div style="display:none" id="noVoteAlert" class="alert alert-dark" role="alert">
-                        Please vote the movie up or down
+    </div>
+    <div class="col-sm-3">
+        <div class="container-fluid text-center text-light">
+            <h4>Leave a Review</h4>
+            {% if not session.logged_in %}
+                    <h6 class="text-muted">Please log in to leave a review</h6>
+            {% endif %}
+            <div style="display:none" id="noVoteAlert" class="alert alert-dark" role="alert">
+                    Please vote the movie up or down
+            </div>
+            <form action="javascript:void(0);" method="post" id="reviewForm" style="padding-bottom: 2rem;">
+                <div class="form-group">
+                    <label for="phone">
+                        Phone Number 
+                        <span title="Phone number is optional and will be used to send a text version of your review." class="text-muted">(Why?):</span> 
+                    </label>
+                    <input type="tel" class="form-control" name="phone" {% if not session.logged_in %}disabled{% endif %}>
                 </div>
-                <form action="javascript:void(0);" method="post" id="reviewForm" style="padding-bottom: 2rem;">
-                    <div class="form-group">
-                        <label for="phone">
-                            Phone Number 
-                            <span title="Phone number is optional and will be used to send a text version of your review." class="text-muted">(Why?):</span> 
-                        </label>
-                        <input type="tel" class="form-control" name="phone" {% if not session.logged_in %}disabled{% endif %}>
-                    </div>
-                    <div class="form-group">
-                        <textarea class="form-control" name="reviewarea" rows="3" required {% if not session.logged_in %}disabled{% endif %}></textarea>
-                    </div>
-                    <div class="btn-group" role="group">
-                        <button type="button" class="btn btn-dark" id="voteUp" onclick="reviewVotes(this.id)" {% if not session.logged_in %}disabled{% endif %}>
-                            <i class="fas fa-thumbs-up"></i>
-                        </button>
-                        <button type="button" class="btn btn-dark" id="voteDown" onclick="reviewVotes(this.id)" {% if not session.logged_in %}disabled{% endif %}>
-                            <i class="fas fa-thumbs-down"></i>
-                        </button>
-                    </div>
-                    <input type="hidden" id="voteValue" name="voteValue" value="none">
-                    <input type="hidden" id="movieid" name="movieid" value="{{ movie['movieid']}}">
-                    <input type="hidden" name="form-type" value="review">
-                    <input type="hidden" name="callback" value="/movie/{{ movie['movieid']}}">
-                    <input class="btn btn-dark" type="submit" onclick="mustGiveVote(movieid.value)" value="Post" {% if not session.logged_in %}disabled{% endif %}>
-                </form>
-                {% for review in reviews %}
-                    <div class="card text-white text-left bg-dark mb-3">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-sm-3">
-                                    {% if review['vote'] == 'up' %}
-                                        <h5 class="card-title" style="color: green; font-size: 50px;"><i class="fas fa-thumbs-up"></i></h5>
-                                    {% elif review['vote'] == 'down' %}
-                                        <h5 class="card-title" style="color: rgba(255, 0, 0, 0.623); font-size: 50px;"><i class="fas fa-thumbs-down"></i></h5>
-                                    {% endif %}
-                                </div>
-                                <div class="col-sm-9">
-                                    <p class="card-text">{{ review['review_text'] }}</p>
-                                    <a style="color: white;" href="/user/{{ review['user'] }}" class="btn btn-link"><h6 class="card-subtitle mb-2 text-muted">- {{ review['user'] }}</h6></a>
-                                </div>
+                <div class="form-group">
+                    <textarea class="form-control" name="reviewarea" rows="3" required {% if not session.logged_in %}disabled{% endif %}></textarea>
+                </div>
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-dark" id="voteUp" onclick="reviewVotes(this.id)" {% if not session.logged_in %}disabled{% endif %}>
+                        <i class="fas fa-thumbs-up"></i>
+                    </button>
+                    <button type="button" class="btn btn-dark" id="voteDown" onclick="reviewVotes(this.id)" {% if not session.logged_in %}disabled{% endif %}>
+                        <i class="fas fa-thumbs-down"></i>
+                    </button>
+                </div>
+                <input type="hidden" id="voteValue" name="voteValue" value="none">
+                <input type="hidden" id="movieid" name="movieid" value="{{ movie['movieid']}}">
+                <input type="hidden" name="form-type" value="review">
+                <input type="hidden" name="callback" value="/movie/{{ movie['movieid']}}">
+                <input class="btn btn-dark" type="submit" onclick="mustGiveVote(movieid.value)" value="Post" {% if not session.logged_in %}disabled{% endif %}>
+            </form>
+            {% for review in reviews %}
+                <div class="card text-white text-left bg-dark mb-3">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-3">
+                                {% if review['vote'] == 'up' %}
+                                    <h5 class="card-title" style="color: green; font-size: 50px;"><i class="fas fa-thumbs-up"></i></h5>
+                                {% elif review['vote'] == 'down' %}
+                                    <h5 class="card-title" style="color: rgba(255, 0, 0, 0.623); font-size: 50px;"><i class="fas fa-thumbs-down"></i></h5>
+                                {% endif %}
+                            </div>
+                            <div class="col-sm-9">
+                                <p class="card-text">{{ review['review_text'] }}</p>
+                                <a style="color: white;" href="/user/{{ review['user'] }}" class="btn btn-link"><h6 class="card-subtitle mb-2 text-muted">- {{ review['user'] }}</h6></a>
                             </div>
                         </div>
                     </div>
-                {% endfor %}
-                
-            </div>
+                </div>
+            {% endfor %}
         </div>
     </div>
+</div>
 {% endblock %}

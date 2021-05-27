@@ -13,7 +13,7 @@ import random
 
 db = boto3.resource('dynamodb')
 ses = boto3.client('ses')
-sns = boto3.resource('sns')
+sns = boto3.client('sns')
 movie_table = db.Table('movie')
 review_table = db.Table('review')
 user_table = db.Table('user')
