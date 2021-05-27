@@ -13,13 +13,20 @@
 
 <div class="row">
     <div class="col-sm-2">
-        <img style="width:325px;padding:10px" src="https://bestflix.s3-ap-southeast-2.amazonaws.com/{{ movie['movieid']}}.jpg" alt="{{ movie['title'] }}">
+        {% set cloudfront_url = "https://d36grsljei4sj1.cloudfront.net" %}
+        <img style="width:325px;padding:10px" src="{{ cloudfront_url }}/{{ movie['movieid']}}.jpg" alt="{{ movie['title'] }}">
     </div>
     <div class="col-sm-7">
         <div style="padding-top: 10px;" class="container-fluid text-left text-light">
-            <h1>{{ movie['title'] }} <span class="mb-2 text-muted"> ({{ movie['released'][6:10] }}) </span></h1>
-            <h4>Starring {{ movie['star'] }}</h4>
-            <h4>Directed by {{ movie['director'] }} </h4>
+            <h1>{{ movie['title'] }} <span class="text-muted"> ({{ movie['released'][6:10] }}) </span></h1>
+            <h4>
+                <span class="text-muted">Starring</span> 
+                <a class="text-light" href="/search?search_term={{ movie['star'] }}">{{ movie['star'] }}</a>
+            </h4>
+            <h4>
+                <span class="text-muted">Directed by</span> 
+                <a class="text-light" href="/search?search_term={{ movie['director'] }}">{{ movie['director'] }}</a>
+            </h4>
             <i><h4>{{ movie['company'] }} </h4></i>
             <h5> {{movie['genre']  }} | Rated {{ movie['classification'] }}</h5>
             <h6 class="text-muted">Runtime: {{ movie['runtime'] }} ({{ runtime_readable }})</h6>
@@ -54,6 +61,13 @@
                         Please vote the movie up or down
                 </div>
                 <form action="javascript:void(0);" method="post" id="reviewForm" style="padding-bottom: 2rem;">
+                    <div class="form-group">
+                        <label for="phone">
+                            Phone Number 
+                            <span title="Phone number is optional and will be used to send a text version of your review." class="text-muted">(Why?):</span> 
+                        </label>
+                        <input type="tel" class="form-control" name="phone" {% if not session.logged_in %}disabled{% endif %}>
+                    </div>
                     <div class="form-group">
                         <textarea class="form-control" name="reviewarea" rows="3" required {% if not session.logged_in %}disabled{% endif %}></textarea>
                     </div>

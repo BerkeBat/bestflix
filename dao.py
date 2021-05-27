@@ -1,32 +1,32 @@
+import re
 from threading import Condition
 import math
 from flask.globals import request
 from flask.helpers import flash
 from dao import *
-from flask import session, render_template_string, render_template
+from flask import session, render_template
 import boto3
 from pycognito import Cognito
-from boto3.dynamodb.conditions import Key, Attr, AttributeNotExists
-import sys
-import requests
+from boto3.dynamodb.conditions import Key, Attr
+import random
+
 
 db = boto3.resource('dynamodb')
 ses = boto3.client('ses')
+sns = boto3.resource('sns')
 movie_table = db.Table('movie')
 review_table = db.Table('review')
 user_table = db.Table('user')
 
+MOVIES_IN_DB = 200
 user_pool_id = "ap-southeast-2_HXX7H0jCA"
 user_pool_client_id = "63k988au5jv73iubjgk5f8lqps"
 
 
-def post_review(username, movieid, review_text, vote):
+def post_review(username, movieid, review_text, vote, phone):
     success = False
     reviewid = "{}_{}".format(username, movieid)
-    print("will post review: {} {} {}".format(
-        reviewid, review_text, vote), file=sys.stderr)
     try:
-        # if review_table.get_item(Key={'reviewid': reviewid}) == None:
         review_table.put_item(
             Item={
                 'reviewid': reviewid,
@@ -37,14 +37,14 @@ def post_review(username, movieid, review_text, vote):
                 'vote': vote,
             },
         )
-        # flash(
-        #     "Error posting review. Note: Users can't leave multiple reviews on a movie")
     except:
-        print("berke: couldn't post review", file=sys.stderr)
-        # flash("Error posting review")
+        flash("Error posting review")
     else:
         send_review_email(get_user("dynamodb", username),
                           get_movie_by_id(movieid), get_review_by_id(reviewid))
+        if phone != "":
+            send_review_notification(get_user("dynamodb", username),
+                                     get_movie_by_id(movieid), get_review_by_id(reviewid), phone)
     success = True
     return success
 
@@ -64,7 +64,9 @@ def register_user(email, username, password):
         )
         success = True
     except:
-        print("register user failed", file=sys.stderr)
+        # print("register user failed", file=sys.stderr)
+        flash("Error registering user.")
+
     else:
         send_ses_verification_email(email)
     return success
@@ -78,7 +80,8 @@ def log_in_user(username, password):
         login_user.authenticate(password=password)
         success = True
     except:
-        print("error logging in/authenticating user.", file=sys.stderr)
+        # print("error logging in/authenticating user.", file=sys.stderr)
+        flash("Error authenticating user.")
     return success
 
 
@@ -97,7 +100,8 @@ def update_favourite(addremove, movieid):
             ExpressionAttributeValues={':val': user_favourites}
         )
     except:
-        print("updating favourite (add/remove) failed.", file=sys.stderr)
+        # print("updating favourite (add/remove) failed.", file=sys.stderr)
+        flash("Error upading favourite.")
     return
 
 
@@ -110,7 +114,7 @@ def get_favourites_details(favourites):
             movie_details = movie_details_response['Item']
             movie_details_list.append(movie_details)
     except:
-        print("Error getting favourites")
+        flash("Error getting favourites")
     return movie_details_list
 
 
@@ -148,7 +152,8 @@ def query_movie(term):
         )
         movies = movie_raw_response['Items']
     except:
-        print("movie query failed. returning empty result")
+        # print("movie query failed. returning empty result")
+        flash("Error querying movies.")
     return movies
 
 
@@ -160,7 +165,8 @@ def get_reviews(by, value):
         )
         reviews = review_response['Items']
     except:
-        print("review query failed. returning empty result", file=sys.stderr)
+        # print("review query failed. returning empty result", file=sys.stderr)
+        flash("Error getting reviews.")
     return reviews
 
 
@@ -185,19 +191,28 @@ def get_movie_by_id(movieid):
 
 
 def get_ses_verification_status(email):
-    verification_attributes_response = ses.get_identity_verification_attributes(
-        Identities=[
-            email,
-        ]
-
-    )
-    return verification_attributes_response['VerificationAttributes'][email]['VerificationStatus']
+    try:
+        verification_attributes_response = ses.get_identity_verification_attributes(
+            Identities=[
+                email,
+            ]
+        )
+    except:
+        flash("Error getting verification status")
+    else:
+        try:
+            return verification_attributes_response['VerificationAttributes'][email]['VerificationStatus']
+        except:
+            return "Error"
 
 
 def send_ses_verification_email(email):
-    ses.verify_email_identity(
-        EmailAddress=email
-    )
+    try:
+        ses.verify_email_identity(
+            EmailAddress=email
+        )
+    except:
+        flash("Error sending verification email")
 
 
 def send_review_email(user, movie, review):
@@ -206,7 +221,7 @@ def send_review_email(user, movie, review):
     email_body = render_template(
         'email.html', user=user, movie=movie, review=review)
     try:
-        email_response = ses.send_email(
+        ses.send_email(
             Destination={
                 'ToAddresses': [
                     recipient,
@@ -230,8 +245,34 @@ def send_review_email(user, movie, review):
         flash("Error sending review email.")
 
 
+def send_review_notification(user, movie, review, phone):
+    topic_name = 'Movie_Review'
+    sns.create_topic(Name=topic_name)
+    message = f'''Hi { user['username'] },
+                Thank you for your review on { movie['title'] }.\n
+                Here's what you wrote:\n
+                "{ review['review_text'] }"\n\n
+                You voted this movie: { review['vote'] }\n\n
+                We hope you enjoy BestFlix!\n\n
+                Kind Regards,\n
+                BestFlix'''
+    sns.publish(PhoneNumber=phone, Message=message)
+
+
 def get_readable_runtime(runtime):
     hours = math.floor(int(runtime)/60)
     mins = int(runtime) % 60
-
     return "{} hrs {} mins".format(hours, mins)
+
+
+def get_random_movies(count):
+    movies = []
+    for i in range(count):
+        movie = str(random.randint(1, MOVIES_IN_DB))
+        if len(movie) == 1:
+            movie = "00" + movie
+        elif len(movie) == 2:
+            movie = "0" + movie
+        movies.append(movie)
+
+    return movies

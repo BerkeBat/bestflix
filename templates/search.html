@@ -19,7 +19,8 @@
                     <div class="card bg-dark text-white">
                         <div class="row">
                             <div class="col-sm-2">
-                                <img style="height: 120px;" src="https://bestflix.s3-ap-southeast-2.amazonaws.com/{{ movie['movieid']}}.jpg" alt="{{ movie['title'] }}">
+                                {% set cloudfront_url = "https://d36grsljei4sj1.cloudfront.net" %}
+                                <img style="height: 120px;" src="{{ cloudfront_url }}/{{ movie['movieid']}}.jpg" alt="{{ movie['title'] }}">
                             </div>
                             <div class="col-sm-7">
                                 <div class="card-body">

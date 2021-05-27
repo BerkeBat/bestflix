@@ -1,4 +1,5 @@
 from flask.helpers import flash
+from pkg_resources import require
 from dao import *
 from flask import Flask, render_template, request, redirect, url_for, g, session
 import logging
@@ -12,8 +13,8 @@ app.config['SECRET_KEY'] = 'cc_assignment3_bestflix'
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-
-    return render_template('index.html')
+    random_movies = get_random_movies(18)
+    return render_template('index.html', random_movies=random_movies)
 
 
 @app.route('/movie/<string:movieid>', methods=['GET', 'POST'])
@@ -24,7 +25,8 @@ def movie(movieid):
             review_text = request.form['reviewarea']
             review_movieid = request.form['movieid']
             review_vote = request.form['voteValue']
-            if not post_review(session['username'], review_movieid, review_text, review_vote):
+            review_phone = request.form['phone']
+            if not post_review(session['username'], review_movieid, review_text, review_vote, review_phone):
                 flash("Error posting review.")
         elif request.form['form-type'] == "favourite_add":
             update_favourite("add", request.form['movieid'])

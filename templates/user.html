@@ -13,7 +13,8 @@
                     <div class="card bg-dark text-white">
                         <div class="row">
                             <div class="col-sm-2">
-                                <img style="height: 120px;" src="https://bestflix.s3-ap-southeast-2.amazonaws.com/{{ movie['movieid']}}.jpg" alt="{{ movie['title'] }}">
+                                {% set cloudfront_url = "https://d36grsljei4sj1.cloudfront.net" %}
+                                <img style="height: 120px;" src="{{ cloudfront_url }}/{{ movie['movieid']}}.jpg" alt="{{ movie['title'] }}">
                             </div>
                             <div class="col-sm-7">
                                 <div class="card-body">
@@ -22,7 +23,7 @@
                                 </div>
                             </div>
                             <div class="col-sm-3">
-                                <div class="container-fluid text-left float-right" >
+                                <!-- <div class="container-fluid"> -->
                                     {% if session.logged_in and session['username'] == user['username'] %}
                                         <form action="/movie/{{ movie['movieid']}}" method="POST">
                                             <input type="hidden" name="form-type" value="favourite_remove">
@@ -31,7 +32,7 @@
                                             <button type="submit" class="btn btn-danger"><i class="fas fa-ban"></i></button>
                                         </form>
                                     {% endif %}
-                                </div>
+                                <!-- </div> -->
                             </div>
                         </div>
                     </div>
@@ -39,11 +40,12 @@
         </div>
     </div>
     <div style="padding-top: 20px;" class="col-sm-4">
-        <div style="padding-top: 20px;" class="container-fluid text-light text-left">
-            <h6>You will need to verify your email address to receive emails when you leave reviews on movies.</h6>
-            <p id="verifyEmailLabel" for="email">Current Verfication Status: {{ verification_status }} </p>
-            
-        </div>
+        {% if session.logged_in and session['username'] == user['username'] %}
+            <div style="padding-top: 20px;" class="container-fluid text-light text-left">
+                <h6>You will need to verify your email address to receive emails when you leave reviews on movies.</h6>
+                <p>Current Verfication Status: {{ verification_status }} </p>
+            </div>
+        {% endif %}
     </div>
     <div class="col-sm-4">
         <div style="padding-top: 20px;" class="container-fluid text-light text-left">
