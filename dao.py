@@ -1,6 +1,6 @@
-import re
 from threading import Condition
 import math
+import json
 from flask.globals import request
 from flask.helpers import flash
 from dao import *
@@ -9,6 +9,7 @@ import boto3
 from pycognito import Cognito
 from boto3.dynamodb.conditions import Key, Attr
 import random
+import requests
 
 
 db = boto3.resource('dynamodb')
@@ -180,6 +181,17 @@ def get_review_by_id(reviewid):
     return review
 
 
+def get_reviews_api(movieid):
+    # data = {"movieid": '"' + movieid + '"'}
+    # # r = requests.post(
+    # #     'https://86k2j27yf4.execute-api.ap-southeast-2.amazonaws.com/get-reviews', json={"body": json.loads(str(data))})
+
+    # # r = requests.get(
+    # # "https://86k2j27yf4.execute-api.ap-southeast-2.amazonaws.com/get-reviews/" + movieid)
+    # return r.json()
+    return None
+
+
 def get_movie_by_id(movieid):
     try:
         movie_response = movie_table.get_item(Key={'movieid': movieid})
@@ -273,6 +285,7 @@ def get_random_movies(count):
             movie = "00" + movie
         elif len(movie) == 2:
             movie = "0" + movie
-        movies.append(movie)
+        if movie not in movies:
+            movies.append(movie)
 
     return movies

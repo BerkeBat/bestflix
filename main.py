@@ -37,7 +37,7 @@ def movie(movieid):
     movie = get_movie_by_id(movieid)
     if movie != None:
         runtime_readable = get_readable_runtime(movie['runtime'])
-        if session['logged_in']:
+        if 'logged_in' in session and session['logged_in']:
             session['user']['favourites'] = get_user(
                 "dynamodb", session['username'])['favourites']
             user_already_favourited = True if movie['movieid'] in session['user']['favourites'] else False
