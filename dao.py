@@ -10,6 +10,7 @@ from pycognito import Cognito
 from boto3.dynamodb.conditions import Key, Attr
 import random
 import requests
+import app as application
 
 
 db = boto3.resource('dynamodb')

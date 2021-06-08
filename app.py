@@ -4,10 +4,12 @@ from dao import *
 from flask import Flask, render_template, request, redirect, url_for, g, session
 import logging
 import math
+import app as application
 
 logging.basicConfig(level=logging.DEBUG)
 
-app = Flask(__name__)
+app = application = Flask(__name__)
+
 app.config['SECRET_KEY'] = 'cc_assignment3_bestflix'
 
 
@@ -109,6 +111,6 @@ def logout():
     return redirect(url_for('login'))
 
 
-# if __name__ == '__main__':
+if __name__ == '__main__':
 
-#     app.run(host='127.0.0.1', port=8080, debug=True)
+    app.run(host='127.0.0.1', port=8080, debug=True)
