@@ -1,4 +1,4 @@
-# Python Flask/AWS - Social Movie Review and Broseing Application
+# Python Flask/AWS - Social Movie Review and Browsing Application
 ## This application was deployed to an EC2 instance through AWS
 
 ## Skills/Technologies Used in this Application
